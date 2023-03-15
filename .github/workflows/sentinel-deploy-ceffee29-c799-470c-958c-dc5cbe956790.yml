@@ -11,7 +11,7 @@ name: Deploy Content to acorreya-prod-test [ceffee29-c799-470c-958c-dc5cbe956790
 
 on: 
   push:
-    branches: [ protectedBranch ]
+    branches: [ main ]
     paths:
     - '**'
     - '!.github/workflows/**'  # this filter prevents other workflow changes from triggering this workflow
@@ -71,8 +71,18 @@ jobs:
         enable-AzPSSession: true
 
     - name: Checkout
-      uses: actions/checkout@v1
-    
+      uses: actions/checkout@v3
+      with:
+        ref: protectedBranch
+        clean: false
+        
+    - name: Checkout Target Branch
+      uses: actions/checkout@v3
+      with:
+        ref: main
+        clean: false
+        
+    #won't have access to script if branch switches to main. Solution: 
     - name: Deploy Content to Azure Sentinel
       uses: azure/powershell@v1
       with:
