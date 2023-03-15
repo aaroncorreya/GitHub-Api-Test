@@ -14,7 +14,7 @@
             "kind": "Scheduled",
             "apiVersion": "2021-03-01-preview",
             "properties": {
-                "displayName": "Valid Analytic Rule 1 Test 2",
+                "displayName": "Valid Analytic Rule 1 Test",
                 "description": "DESCRIPTION CHECK",
                 "severity": "High",
                 "enabled": true,
