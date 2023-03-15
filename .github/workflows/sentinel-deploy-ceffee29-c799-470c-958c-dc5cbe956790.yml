@@ -11,7 +11,8 @@ name: Deploy Content to acorreya-prod-test [ceffee29-c799-470c-958c-dc5cbe956790
 
 on: 
   push:
-    branches: [ main ]
+    branches:
+      - 'main'
     paths:
     - '**'
     - '!.github/workflows/**'  # this filter prevents other workflow changes from triggering this workflow
