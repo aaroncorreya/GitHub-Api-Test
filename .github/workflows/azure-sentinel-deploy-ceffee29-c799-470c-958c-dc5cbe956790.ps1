@@ -18,7 +18,7 @@ $sourceControlId = $Env:sourceControlId
 $rootDirectory = $Env:rootDirectory
 $githubAuthToken = $Env:githubAuthToken
 $githubRepository = $Env:GITHUB_REPOSITORY
-$branchName = $Env:branch
+$branchName = "main"
 $smartDeployment = $Env:smartDeployment
 $csvPath = "$rootDirectory\.sentinel\tracking_table_$sourceControlId.csv"
 $configPath = "$rootDirectory\sentinel-deployment.config"
@@ -144,7 +144,7 @@ function PushCsvToRepo($getTreeResponse) {
     $body = @{
         message = "trackingTable.csv created."
         content = $encodedContent
-        branch = $branchName
+        branch = "protectedBranch"
         sha = $sha
     } | ConvertTo-Json
 
