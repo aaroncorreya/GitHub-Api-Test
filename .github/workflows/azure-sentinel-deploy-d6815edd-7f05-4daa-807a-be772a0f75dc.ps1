@@ -22,6 +22,7 @@ $branchName = $Env:branch
 $smartDeployment = $Env:smartDeployment
 $csvPath = "$rootDirectory\.sentinel\tracking_table_$sourceControlId.csv"
 $configPath = "$rootDirectory\sentinel-deployment.config"
+$newResourceBranch = "$branchName-sentinel-deployment"
 $global:localCsvTablefinal = @{}
 $global:updatedCsvTable = @{}
 $global:parameterFileMapping = @{}
@@ -107,10 +108,37 @@ $header = @{
 
 #Gets all files and commit shas using Get Trees API 
 function GetGithubTree {
-    $branchResponse = AttemptInvokeRestMethod "Get" "https://api.github.com/repos/$githubRepository/branches/$branchName" $null $null 3
+    Param(
+        [string]$branch
+    )
+    $branchResponse = AttemptInvokeRestMethod "Get" "https://api.github.com/repos/$githubRepository/branches/$branch" $null $null 3
     $treeUrl = "https://api.github.com/repos/$githubRepository/git/trees/" + $branchResponse.commit.sha + "?recursive=true"
     $getTreeResponse = AttemptInvokeRestMethod "Get" $treeUrl $null $null 3
     return $getTreeResponse
+}
+
+#Creates new branch using the GitHub API with the name of the branchName + "-sentinel-deployment"
+#TODO: Find a point to check if branch already exists, if so then read the csv file from that branch
+function TryCreateBranch {
+    $getBranchResponse = AttemptInvokeRestMethod "Get" "https://api.github.com/repos/$githubRepository/branches/$branchName" $null $null 3
+    $createBranchUrl = "https://api.github.com/repos/$githubRepository/git/refs"
+    
+    $body = @{
+        ref = "refs/heads/$newResourceBranch"
+        sha = $getBranchResponse.commit.sha
+    } | ConvertTo-Json
+
+    AttemptInvokeRestMethod "Post" $createBranchUrl $body $null 3
+}
+
+function GetFile {
+    Param(
+        [string]$path,
+        [string]$branch
+    )
+    $url = "https://api.github.com/repos/$githubRepository/contents/$path?ref=$branch"
+    $response = AttemptInvokeRestMethod "Get" $url $null $null 3
+    return $response
 }
 
 #Gets blob commit sha of the csv file, used when updating csv file to repo 
@@ -133,10 +161,12 @@ function GetCommitShaTable($getTreeResponse) {
     return $shaTable
 }
 
+#TODO: Create new branch and add csv file to it with newBranch tree response
 #Pushes new/updated csv file to the user's repository. If updating file, will need csv commit sha. 
-function PushCsvToRepo($getTreeResponse) {
+function PushCsvToRepo {
     $relativeCsvPath = RelativePathWithBackslash $csvPath
-    $sha = GetCsvCommitSha $getTreeResponse
+    $newResourceTree = GetGithubTree -branch $newResourceBranch
+    $sha = GetCsvCommitSha $newResourceTree
     $createFileUrl = "https://api.github.com/repos/$githubRepository/contents/$relativeCsvPath"
     $content = ConvertTableToString
     $encodedContent = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($content))
@@ -144,19 +174,14 @@ function PushCsvToRepo($getTreeResponse) {
     $body = @{
         message = "trackingTable.csv created."
         content = $encodedContent
-        branch = $branchName
+        branch = $newResourceBranch
         sha = $sha
     } | ConvertTo-Json
 
-    $Parameters = @{
-        Method      = "PUT"
-        Uri         = $createFileUrl
-        Headers     = $header
-        Body        = $body | ConvertTo-Json
-    }
     AttemptInvokeRestMethod "Put" $createFileUrl $body $null 3
 }
 
+#TODO: Read file from different branch
 function ReadCsvToTable {
     $csvTable = Import-Csv -Path $csvPath
     $HashTable=@{}
@@ -515,7 +540,7 @@ function Deployment($fullDeploymentFlag, $remoteShaTable, $tree) {
                 }
             }
         }
-        PushCsvToRepo $tree
+        PushCsvToRepo
         if ($totalFiles -gt 0 -and $totalFailed -gt 0) 
         {
             $err = "$totalFailed of $totalFiles deployments failed."
@@ -557,6 +582,8 @@ function SmartDeployment($fullDeploymentFlag, $remoteShaTable, $path, $parameter
     }
 }
 
+# Write a function that checks if a file exists in the repo on a specific branch
+
 function main() {
     if ($CloudEnv -ne 'AzureCloud') 
     {
@@ -564,13 +591,15 @@ function main() {
         ConnectAzCloud
     }
 
+    # Check if resourceBranch exists, if it does, read the csv file and store it in a hashtable
+    # If it doesn't exist, then create it 
     if (Test-Path $csvPath) {
         $global:localCsvTablefinal = ReadCsvToTable
     }
 
     LoadDeploymentConfig
 
-    $tree = GetGithubTree
+    $tree = GetGithubTree -branch $branchName
     $remoteShaTable = GetCommitShaTable $tree
 
     $existingConfigSha = $global:localCsvTablefinal[$configPath]
