@@ -560,6 +560,8 @@ function SmartDeployment($fullDeploymentFlag, $remoteShaTable, $path, $parameter
 function main() {
     git version
     git status
+    git config --global user.email "donotreply@sentinel"
+    git config --global user.name "Sentinel"
     git checkout --orphan "orphan"
     git commit --allow-empty -m "Initial commit on orphan branch"
     git push -u origin "orphan"
