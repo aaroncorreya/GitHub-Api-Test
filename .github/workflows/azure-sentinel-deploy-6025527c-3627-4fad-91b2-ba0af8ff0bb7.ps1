@@ -558,6 +558,11 @@ function SmartDeployment($fullDeploymentFlag, $remoteShaTable, $path, $parameter
 }
 
 function main() {
+    git version
+    git status
+    git checkout main
+    git checkout $branchName
+
     if ($CloudEnv -ne 'AzureCloud') 
     {
         Write-Output "Attempting Sign In to Azure Cloud"
