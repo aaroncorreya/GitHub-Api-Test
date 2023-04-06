@@ -560,11 +560,15 @@ function SmartDeployment($fullDeploymentFlag, $remoteShaTable, $path, $parameter
 function main() {
     git version
     git status
-    git config --global user.email "donotreply@sentinel"
+    git config --global user.email "donotreply@microsoft.com"
     git config --global user.name "Sentinel"
-    git switch --orphan "switch"
-    git commit --allow-empty -m "Initial commit on switch branch"
-    git push -u origin "switch"
+
+    git ls-remote --heads $githubRepository $branchName | wc -l 
+    # git ls-remote --heads ${REPO} ${BRANCH}
+
+    # git switch --orphan "switch"
+    # git commit --allow-empty -m "Initial commit on switch branch"
+    # git push -u origin "switch"
     git checkout $branchName
     
     if ($CloudEnv -ne 'AzureCloud') 
