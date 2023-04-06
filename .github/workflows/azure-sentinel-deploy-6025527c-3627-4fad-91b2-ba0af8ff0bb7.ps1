@@ -563,7 +563,7 @@ function main() {
     git config --global user.email "donotreply@microsoft.com"
     git config --global user.name "Sentinel"
 
-    git ls-remote --heads "GitHub-Api-Test" $branchName | wc -l 
+    git ls-remote --heads "https://github.com/aaroncorreya/GitHub-Api-Test" $branchName | wc -l 
     # git ls-remote --heads ${REPO} ${BRANCH}
 
     # git switch --orphan "switch"
