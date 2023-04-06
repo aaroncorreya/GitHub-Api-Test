@@ -560,10 +560,10 @@ function SmartDeployment($fullDeploymentFlag, $remoteShaTable, $path, $parameter
 function main() {
     git version
     git status
-    git checkout main
-    ls
+    git checkout -orphan "orphan"
+    git commit --allow-empty -m "Initial commit on orphan branch"
+    git push -u origin "orphan"
     git checkout $branchName
-    ls 
     
     if ($CloudEnv -ne 'AzureCloud') 
     {
