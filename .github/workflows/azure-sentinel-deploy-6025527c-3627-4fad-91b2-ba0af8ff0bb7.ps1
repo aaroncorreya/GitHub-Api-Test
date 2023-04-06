@@ -561,8 +561,10 @@ function main() {
     git version
     git status
     git checkout main
+    ls
     git checkout $branchName
-
+    ls 
+    
     if ($CloudEnv -ne 'AzureCloud') 
     {
         Write-Output "Attempting Sign In to Azure Cloud"
