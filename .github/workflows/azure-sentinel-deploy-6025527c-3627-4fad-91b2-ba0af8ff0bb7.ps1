@@ -20,6 +20,7 @@ $githubAuthToken = $Env:githubAuthToken
 $githubRepository = $Env:GITHUB_REPOSITORY
 $branchName = $Env:branch
 $smartDeployment = $Env:smartDeployment
+$newResourceBranch = $branchName + "sentinel-deploymen"
 $csvPath = "$rootDirectory\.sentinel\tracking_table_$sourceControlId.csv"
 $configPath = "$rootDirectory\sentinel-deployment.config"
 $global:localCsvTablefinal = @{}
@@ -557,18 +558,34 @@ function SmartDeployment($fullDeploymentFlag, $remoteShaTable, $path, $parameter
     }
 }
 
+function TryGetOrCreateCsvFile {
+    if (Test-Path $csvPath) {$global:localCsvTablefinal = ReadCsvToTable}
+    $branchExists = git ls-remote --heads "https://github.com/aaroncorreya/GitHub-Api-Test" $newResourceBranch | wc -l 
+    if (!$branchExists) {
+        git switch --orphan $newResourceBranch
+        git commit --allow-empty -m "Initial commit on switch branch"
+        git push -u origin $newResourceBranch
+    } else {
+        git checkout $newResourceBranch
+        if (Test-Path $csvPath) {$global:localCsvTablefinal = ReadCsvToTable}
+    }
+}
+
 function main() {
     git version
     git status
     git config --global user.email "donotreply@microsoft.com"
     git config --global user.name "Sentinel"
+    #returns 1 or 0 if exists
+    # $branchExists = git ls-remote --heads "https://github.com/aaroncorreya/GitHub-Api-Test" $branchName | wc -l 
+    git ls-remote --heads $githubRepository $branchName | wc -l 
 
-    git ls-remote --heads "https://github.com/aaroncorreya/GitHub-Api-Test" $branchName | wc -l 
-    # git ls-remote --heads ${REPO} ${BRANCH}
+    # if (!$branchExists) {
+    #     git switch --orphan $newResourceBranch
+    #     git commit --allow-empty -m "Initial commit on switch branch"
+    #     git push -u origin $newResourceBranch
+    # }
 
-    # git switch --orphan "switch"
-    # git commit --allow-empty -m "Initial commit on switch branch"
-    # git push -u origin "switch"
     git checkout $branchName
     
     if ($CloudEnv -ne 'AzureCloud') 
