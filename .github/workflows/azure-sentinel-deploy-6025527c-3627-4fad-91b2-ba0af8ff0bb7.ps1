@@ -599,6 +599,7 @@ function main() {
     git switch --orphan $newResourceBranch
     #New-Item -Path $csvPath -ItemType "file" -Value "1, 2, 3"
     Write-Output "Hello world" > sample.txt
+    git add .
     git commit --allow-empty -m "Initial commit on orphan branch"
     git push -u origin $newResourceBranch
 
