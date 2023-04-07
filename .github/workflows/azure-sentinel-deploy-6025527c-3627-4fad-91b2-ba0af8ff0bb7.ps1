@@ -594,7 +594,11 @@ function main() {
     git config --global user.email "donotreply@microsoft.com"
     git config --global user.name "Sentinel"
 
-    UpdatedPushCsvToRepo
+    # UpdatedPushCsvToRepo
+    # git ls-remote --heads "https://github.com/aaroncorreya/GitHub-Api-Test" $newResourceBranch | wc -l
+    git switch --orphan $newResourceBranch
+    git commit --allow-empty -m "Initial commit on orphan branch"
+    git push -u origin $newResourceBranch
 
     if ($CloudEnv -ne 'AzureCloud') 
     {
