@@ -158,8 +158,12 @@ function UpdatedPushCsvToRepo() {
     $relativeCsvPath = RelativePathWithBackslash $csvPath
 
     $resourceBranchExists = git ls-remote --heads "https://github.com/aaroncorreya/GitHub-Api-Test" $newResourceBranch | wc -l 
+    Write-Host "EXISTS: $resourceBranchExists"
+
     if (!$resourceBranchExists) {
         git switch --orphan $newResourceBranch
+        git commit --allow-empty -m "Initial commit on orphan branch"
+        git push -u origin $newResourceBranch
     } else {
         git checkout $newResourceBranch
         git pull
