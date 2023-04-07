@@ -599,6 +599,8 @@ function main() {
     git switch --orphan $newResourceBranch
     #New-Item -Path $csvPath -ItemType "file" -Value "1, 2, 3"
     $newPath = RelativePathWithBackslash $csvPath
+    New-Item -ItemType "directory" -Path ".sentinel"
+
     Write-Output "1, 2, 3" > ".sentinel\text.txt"
     git add ".sentinel\text.txt"
     git commit --allow-empty -m "Initial commit on orphan branch"
