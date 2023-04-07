@@ -149,13 +149,31 @@ function PushCsvToRepo($getTreeResponse) {
         sha = $sha
     } | ConvertTo-Json
 
-    $Parameters = @{
-        Method      = "PUT"
-        Uri         = $createFileUrl
-        Headers     = $header
-        Body        = $body | ConvertTo-Json
-    }
     AttemptInvokeRestMethod "Put" $createFileUrl $body $null 3
+}
+
+function UpdatedPushCsvToRepo() {
+    # $content = ConvertTableToString
+    $content = "Hello World!"
+    $resourceBranchExists = git ls-remote --heads "https://github.com/aaroncorreya/GitHub-Api-Test" $newResourceBranch | wc -l 
+    if (!$resourceBranchExists) {
+        git switch --orphan $newResourceBranch
+    } else {
+        git checkout $newResourceBranch
+    }
+    
+    Write-Output $content > $relativeCsvPath
+    git add $relativeCsvPath
+    git commit -m "Updated tracking table"
+    git push -u origin $newResourceBranch
+    git checkout $branchName
+}
+
+function CreateBranch() {
+    git switch --orphan $newResourceBranch
+    git commit --allow-empty -m "Initial commit on orphan branch"
+    git push -u origin $newResourceBranch
+
 }
 
 function ReadCsvToTable {
@@ -558,16 +576,15 @@ function SmartDeployment($fullDeploymentFlag, $remoteShaTable, $path, $parameter
     }
 }
 
-function TryGetOrCreateCsvFile {
+#Check if existing csv file exists in current and new branch
+function TryGetCsvFile {
     if (Test-Path $csvPath) {$global:localCsvTablefinal = ReadCsvToTable}
-    $branchExists = git ls-remote --heads "https://github.com/aaroncorreya/GitHub-Api-Test" $newResourceBranch | wc -l 
-    if (!$branchExists) {
-        git switch --orphan $newResourceBranch
-        git commit --allow-empty -m "Initial commit on switch branch"
-        git push -u origin $newResourceBranch
-    } else {
+    
+    $resourceBranchExists = git ls-remote --heads "https://github.com/aaroncorreya/GitHub-Api-Test" $newResourceBranch | wc -l 
+    if ($resourceBranchExists) {
         git checkout $newResourceBranch
         if (Test-Path $csvPath) {$global:localCsvTablefinal = ReadCsvToTable}
+        git checkout $branchName
     }
 }
 
@@ -576,18 +593,9 @@ function main() {
     git status
     git config --global user.email "donotreply@microsoft.com"
     git config --global user.name "Sentinel"
-    #returns 1 or 0 if exists
-    # $branchExists = git ls-remote --heads "https://github.com/aaroncorreya/GitHub-Api-Test" $branchName | wc -l 
-    git ls-remote --heads $githubRepository $branchName | wc -l 
 
-    # if (!$branchExists) {
-    #     git switch --orphan $newResourceBranch
-    #     git commit --allow-empty -m "Initial commit on switch branch"
-    #     git push -u origin $newResourceBranch
-    # }
+    UpdatedPushCsvToRepo
 
-    git checkout $branchName
-    
     if ($CloudEnv -ne 'AzureCloud') 
     {
         Write-Output "Attempting Sign In to Azure Cloud"
