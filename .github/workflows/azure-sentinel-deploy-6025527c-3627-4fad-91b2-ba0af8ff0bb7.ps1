@@ -155,13 +155,17 @@ function PushCsvToRepo($getTreeResponse) {
 function UpdatedPushCsvToRepo() {
     # $content = ConvertTableToString
     $content = "Hello World!"
+    $relativeCsvPath = RelativePathWithBackslash $csvPath
+
     $resourceBranchExists = git ls-remote --heads "https://github.com/aaroncorreya/GitHub-Api-Test" $newResourceBranch | wc -l 
     if (!$resourceBranchExists) {
         git switch --orphan $newResourceBranch
     } else {
         git checkout $newResourceBranch
+        git pull
     }
     
+    New-Item -ItemType "directory" -Path ".sentinel"
     Write-Output $content > $relativeCsvPath
     git add $relativeCsvPath
     git commit -m "Updated tracking table"
@@ -594,17 +598,18 @@ function main() {
     git config --global user.email "donotreply@microsoft.com"
     git config --global user.name "Sentinel"
 
-    # UpdatedPushCsvToRepo
-    # git ls-remote --heads "https://github.com/aaroncorreya/GitHub-Api-Test" $newResourceBranch | wc -l
-    git switch --orphan $newResourceBranch
-    #New-Item -Path $csvPath -ItemType "file" -Value "1, 2, 3"
-    $newPath = RelativePathWithBackslash $csvPath
-    New-Item -ItemType "directory" -Path ".sentinel"
+    # # UpdatedPushCsvToRepo
+    # # git ls-remote --heads "https://github.com/aaroncorreya/GitHub-Api-Test" $newResourceBranch | wc -l
+    # git switch --orphan $newResourceBranch
+    # #New-Item -Path $csvPath -ItemType "file" -Value "1, 2, 3"
+    # $newPath = RelativePathWithBackslash $csvPath
+    # New-Item -ItemType "directory" -Path ".sentinel"
 
-    Write-Output "1, 2, 3" > ".sentinel\text.txt"
-    git add ".sentinel\text.txt"
-    git commit --allow-empty -m "Initial commit on orphan branch"
-    git push -u origin $newResourceBranch
+    # Write-Output "1, 2, 3" > ".sentinel\text.txt"
+    # git add ".sentinel\text.txt"
+    # git commit --allow-empty -m "Initial commit on orphan branch"
+    # git push -u origin $newResourceBranch
+    UpdatedPushCsvToRepo
 
     if ($CloudEnv -ne 'AzureCloud') 
     {
