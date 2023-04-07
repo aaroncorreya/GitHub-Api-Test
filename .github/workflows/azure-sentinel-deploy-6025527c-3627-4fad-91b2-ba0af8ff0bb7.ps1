@@ -597,7 +597,7 @@ function main() {
     # UpdatedPushCsvToRepo
     # git ls-remote --heads "https://github.com/aaroncorreya/GitHub-Api-Test" $newResourceBranch | wc -l
     git switch --orphan $newResourceBranch
-    New-Item -Path $csvPath -ItemType "file" -Value "1, 2, 3"
+    New-Item -Path ".\$csvPath" -ItemType "file" -Value "1, 2, 3"
     git commit --allow-empty -m "Initial commit on orphan branch"
     git push -u origin $newResourceBranch
 
