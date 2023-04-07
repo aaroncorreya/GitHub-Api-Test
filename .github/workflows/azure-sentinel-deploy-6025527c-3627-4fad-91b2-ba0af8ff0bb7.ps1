@@ -20,7 +20,7 @@ $githubAuthToken = $Env:githubAuthToken
 $githubRepository = $Env:GITHUB_REPOSITORY
 $branchName = $Env:branch
 $smartDeployment = $Env:smartDeployment
-$newResourceBranch = $branchName + "sentinel-deploymen"
+$newResourceBranch = $branchName + "-sentinel-deployment"
 $csvPath = "$rootDirectory\.sentinel\tracking_table_$sourceControlId.csv"
 $configPath = "$rootDirectory\sentinel-deployment.config"
 $global:localCsvTablefinal = @{}
@@ -160,7 +160,7 @@ function UpdatedPushCsvToRepo() {
     $resourceBranchExists = git ls-remote --heads "https://github.com/aaroncorreya/GitHub-Api-Test" $newResourceBranch | wc -l 
     Write-Host "EXISTS: $resourceBranchExists"
 
-    if (!$resourceBranchExists) {
+    if ($resourceBranchExists -eq 0) {
         git switch --orphan $newResourceBranch
         git commit --allow-empty -m "Initial commit on orphan branch"
         git push -u origin $newResourceBranch
@@ -614,6 +614,7 @@ function main() {
     # git add ".sentinel\text.txt"
     # git commit --allow-empty -m "Initial commit on orphan branch"
     # git push -u origin $newResourceBranch
+    
     UpdatedPushCsvToRepo
 
     if ($CloudEnv -ne 'AzureCloud') 
