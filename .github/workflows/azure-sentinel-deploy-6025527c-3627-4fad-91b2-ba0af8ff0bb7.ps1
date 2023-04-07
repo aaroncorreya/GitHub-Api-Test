@@ -598,8 +598,9 @@ function main() {
     # git ls-remote --heads "https://github.com/aaroncorreya/GitHub-Api-Test" $newResourceBranch | wc -l
     git switch --orphan $newResourceBranch
     #New-Item -Path $csvPath -ItemType "file" -Value "1, 2, 3"
-    Write-Output "Hello world" > sample.txt
-    git add "sample.txt"
+    $newPath = RelativePathWithBackslash $csvPath
+    Write-Output "1, 2, 3" > $newPath
+    git add $newPath
     git commit --allow-empty -m "Initial commit on orphan branch"
     git push -u origin $newResourceBranch
 
