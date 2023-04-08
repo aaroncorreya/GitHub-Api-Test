@@ -164,13 +164,13 @@ function UpdatedPushCsvToRepo() {
         git switch --orphan $newResourceBranch
         git commit --allow-empty -m "Initial commit on orphan branch"
         git push -u origin $newResourceBranch
+        New-Item -ItemType "directory" -Path ".sentinel"
     } else {
         git checkout $newResourceBranch
         git pull
     }
     
     Write-Host "CSV: $relativeCsvPath"
-    New-Item -ItemType "directory" -Path ".sentinel"
     Write-Output $content > $relativeCsvPath
     git add $relativeCsvPath
     git commit -m "Updated tracking table"
