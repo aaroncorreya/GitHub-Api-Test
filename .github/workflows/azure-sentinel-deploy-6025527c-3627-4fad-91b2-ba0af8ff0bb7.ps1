@@ -154,7 +154,7 @@ function PushCsvToRepo($getTreeResponse) {
 
 function UpdatedPushCsvToRepo() {
     # $content = ConvertTableToString
-    $content = "Hello World!"
+    $content = "Hello World !"
     $relativeCsvPath = RelativePathWithBackslash $csvPath
 
     $resourceBranchExists = git ls-remote --heads "https://github.com/aaroncorreya/GitHub-Api-Test" $newResourceBranch | wc -l 
