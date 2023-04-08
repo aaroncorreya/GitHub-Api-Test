@@ -170,7 +170,7 @@ function UpdatedPushCsvToRepo() {
     }
     
     Write-Host "CSV: $relativeCsvPath"
-    #New-Item -ItemType "directory" -Path ".sentinel"
+    New-Item -ItemType "directory" -Path ".sentinel"
     Write-Output $content > $relativeCsvPath
     git add $relativeCsvPath
     git commit -m "Updated tracking table"
