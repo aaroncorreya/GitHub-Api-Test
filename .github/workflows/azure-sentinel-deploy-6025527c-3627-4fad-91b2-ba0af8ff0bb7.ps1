@@ -167,7 +167,7 @@ function UpdatedPushCsvToRepo() {
         New-Item -ItemType "directory" -Path ".sentinel"
     } else {
         git checkout $newResourceBranch
-        git pull
+        #git pull
     }
     
     Write-Host "CSV: $relativeCsvPath"
@@ -588,11 +588,17 @@ function SmartDeployment($fullDeploymentFlag, $remoteShaTable, $path, $parameter
 #Check if existing csv file exists in current and new branch
 function TryGetCsvFile {
     if (Test-Path $csvPath) {$global:localCsvTablefinal = ReadCsvToTable}
-    
+
+    $relativeCsvPath = RelativePathWithBackslash $csvPath
+    Write-Host "CSV PATH: $csvPath"
+    Write-Host "Relative CSV PATH: $relateiveCsvPath"
     $resourceBranchExists = git ls-remote --heads "https://github.com/aaroncorreya/GitHub-Api-Test" $newResourceBranch | wc -l 
-    if ($resourceBranchExists) {
+    if ($resourceBranchExists -eq 0) {
         git checkout $newResourceBranch
-        if (Test-Path $csvPath) {$global:localCsvTablefinal = ReadCsvToTable}
+        if (Test-Path $relativeCsvPath) {
+            Write-Host "Found FILE in branch!!!"
+            $global:localCsvTablefinal = ReadCsvToTable
+        }
         git checkout $branchName
     }
 }
@@ -602,6 +608,8 @@ function main() {
     git status
     git config --global user.email "donotreply@microsoft.com"
     git config --global user.name "Sentinel"
+
+    TryGetCsvFile
 
     # # UpdatedPushCsvToRepo
     # # git ls-remote --heads "https://github.com/aaroncorreya/GitHub-Api-Test" $newResourceBranch | wc -l
@@ -615,7 +623,7 @@ function main() {
     # git commit --allow-empty -m "Initial commit on orphan branch"
     # git push -u origin $newResourceBranch
     
-    UpdatedPushCsvToRepo
+    # UpdatedPushCsvToRepo
 
     if ($CloudEnv -ne 'AzureCloud') 
     {
