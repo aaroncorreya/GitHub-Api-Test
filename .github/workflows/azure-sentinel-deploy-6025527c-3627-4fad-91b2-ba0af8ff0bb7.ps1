@@ -590,12 +590,13 @@ function TryGetCsvFile {
     if (Test-Path $csvPath) {$global:localCsvTablefinal = ReadCsvToTable}
 
     $relativeCsvPath = RelativePathWithBackslash $csvPath
-    Write-Host "CSV PATH: $csvPath, relative path: $relativeCsvPath"
+    "CSV PATH: $csvPath, relative path: $relativeCsvPath"
     $resourceBranchExists = git ls-remote --heads "https://github.com/aaroncorreya/GitHub-Api-Test" $newResourceBranch | wc -l 
     if ($resourceBranchExists -eq 0) {
         git checkout $newResourceBranch
+        "New branch exists"
         if (Test-Path $relativeCsvPath) {
-            Write-Host "Found FILE in branch!!!"
+            "Found FILE in branch!!!"
             $global:localCsvTablefinal = ReadCsvToTable
         }
         git checkout $branchName
