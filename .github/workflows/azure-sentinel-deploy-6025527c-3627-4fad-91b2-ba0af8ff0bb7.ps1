@@ -595,6 +595,7 @@ function TryGetCsvFile {
     $resourceBranchExists = git ls-remote --heads "https://github.com/aaroncorreya/GitHub-Api-Test" $newResourceBranch | wc -l 
     "Resource branch exists: $resourceBranchExists"
     if ($resourceBranchExists -eq 1) {
+        git fetch --all
         git checkout $newResourceBranch
         "New branch exists"
         # if (Test-Path $relativeCsvPath) {
