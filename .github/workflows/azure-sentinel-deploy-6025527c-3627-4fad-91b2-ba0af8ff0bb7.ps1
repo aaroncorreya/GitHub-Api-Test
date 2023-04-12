@@ -589,6 +589,7 @@ function SmartDeployment($fullDeploymentFlag, $remoteShaTable, $path, $parameter
 function TryGetCsvFile {
     if (Test-Path $csvPath) {$global:localCsvTablefinal = ReadCsvToTable}
 
+    $newFilePath = ".sentinel/test.txt"
     $relativeCsvPath = RelativePathWithBackslash $csvPath
     "CSV PATH: $csvPath, relative path: $relativeCsvPath"
     $resourceBranchExists = git ls-remote --heads "https://github.com/aaroncorreya/GitHub-Api-Test" $newResourceBranch | wc -l 
@@ -596,7 +597,8 @@ function TryGetCsvFile {
     if ($resourceBranchExists -eq 1) {
         git checkout $newResourceBranch
         "New branch exists"
-        if (Test-Path $relativeCsvPath) {
+        # if (Test-Path $relativeCsvPath) {
+        if (Test-Path $newFilePath) {
             "Found FILE in branch!!!"
             $global:localCsvTablefinal = ReadCsvToTable
         }
