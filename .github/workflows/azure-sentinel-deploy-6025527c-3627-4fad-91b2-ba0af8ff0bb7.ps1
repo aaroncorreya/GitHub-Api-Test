@@ -556,7 +556,6 @@ function SmartDeployment($fullDeploymentFlag, $remoteShaTable, $path, $parameter
         if (!$fullDeploymentFlag) {
             $existingSha = $global:localCsvTablefinal[$path]
             "SHA SHA SHA"
-            Write-Host ($existingSha | Out-String)
             $remoteSha = $remoteShaTable[$path]
             $skip = (($existingSha) -and ($existingSha -eq $remoteSha))
             if ($skip -and $parameterFile) {
@@ -614,22 +613,6 @@ function main() {
     git config --global user.email "donotreply@microsoft.com"
     git config --global user.name "Sentinel"
 
-    #TryGetCsvFile
-
-    # # UpdatedPushCsvToRepo
-    # # git ls-remote --heads "https://github.com/aaroncorreya/GitHub-Api-Test" $newResourceBranch | wc -l
-    # git switch --orphan $newResourceBranch
-    # #New-Item -Path $csvPath -ItemType "file" -Value "1, 2, 3"
-    # $newPath = RelativePathWithBackslash $csvPath
-    # New-Item -ItemType "directory" -Path ".sentinel"
-
-    # Write-Output "1, 2, 3" > ".sentinel\text.txt"
-    # git add ".sentinel\text.txt"
-    # git commit --allow-empty -m "Initial commit on orphan branch"
-    # git push -u origin $newResourceBranch
-    
-    # UpdatedPushCsvToRepo
-
     if ($CloudEnv -ne 'AzureCloud') 
     {
         Write-Output "Attempting Sign In to Azure Cloud"
@@ -655,6 +638,7 @@ function main() {
 
     # $fullDeploymentFlag = $modifiedConfig -or (-not (Test-Path $csvPath)) -or ($smartDeployment -eq "false")
     $fullDeploymentFlag = $modifiedConfig -or ($smartDeployment -eq "false")
+    "Full deployment flag: $fullDeploymentFlag"
     Deployment $fullDeploymentFlag $remoteShaTable $tree
 }
 
