@@ -614,7 +614,7 @@ function main() {
     git config --global user.email "donotreply@microsoft.com"
     git config --global user.name "Sentinel"
 
-    TryGetCsvFile
+    #TryGetCsvFile
 
     # # UpdatedPushCsvToRepo
     # # git ls-remote --heads "https://github.com/aaroncorreya/GitHub-Api-Test" $newResourceBranch | wc -l
