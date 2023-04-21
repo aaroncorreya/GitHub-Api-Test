@@ -578,8 +578,6 @@ function main() {
     git config --global user.email "donotreply@microsoft.com"
     git config --global user.name "Sentinel"
 
-    $githubRepository
-
     if ($CloudEnv -ne 'AzureCloud') 
     {
         Write-Output "Attempting Sign In to Azure Cloud"
