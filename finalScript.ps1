@@ -555,6 +555,7 @@ function SmartDeployment($fullDeploymentFlag, $remoteShaTable, $path, $parameter
         $isSuccess = $null
         if (!$fullDeploymentFlag) {
             $existingSha = $global:localCsvTablefinal[$path]
+            "SHA SHA SHA"
             $remoteSha = $remoteShaTable[$path]
             $skip = (($existingSha) -and ($existingSha -eq $remoteSha))
             if ($skip -and $parameterFile) {
@@ -583,6 +584,10 @@ function TryGetCsvFile {
     if (Test-Path $csvPath) {
         $global:localCsvTablefinal = ReadCsvToTable
         Remove-Item -Path $csvPath
+
+        git add $csvPath
+        git commit -m "Removed tracking file and moved to new unprotected branch"
+        git push origin $branchName
     }
 
     $relativeCsvPath = RelativePathWithBackslash $csvPath
@@ -596,6 +601,7 @@ function TryGetCsvFile {
         if (Test-Path $relativeCsvPath) {
             "Found FILE in branch!!!"
             $global:localCsvTablefinal = ReadCsvToTable
+            Write-Host ($global:localCsvTablefinal | Format-Table | Out-String)
         }
         git checkout $branchName
     }
@@ -630,7 +636,9 @@ function main() {
         $global:updatedCsvTable[$configPath] = $remoteConfigSha
     }
 
-    $fullDeploymentFlag = $modifiedConfig -or (-not (Test-Path $csvPath)) -or ($smartDeployment -eq "false")
+    # $fullDeploymentFlag = $modifiedConfig -or (-not (Test-Path $csvPath)) -or ($smartDeployment -eq "false")
+    $fullDeploymentFlag = $modifiedConfig -or ($smartDeployment -eq "false")
+    "Full deployment flag: $fullDeploymentFlag"
     Deployment $fullDeploymentFlag $remoteShaTable $tree
 }
 
