@@ -653,7 +653,8 @@ function main() {
         $global:updatedCsvTable[$configPath] = $remoteConfigSha
     }
 
-    $fullDeploymentFlag = $modifiedConfig -or (-not (Test-Path $csvPath)) -or ($smartDeployment -eq "false")
+    # $fullDeploymentFlag = $modifiedConfig -or (-not (Test-Path $csvPath)) -or ($smartDeployment -eq "false")
+    $fullDeploymentFlag = $modifiedConfig -or ($smartDeployment -eq "false")
     Deployment $fullDeploymentFlag $remoteShaTable $tree
 }
 
