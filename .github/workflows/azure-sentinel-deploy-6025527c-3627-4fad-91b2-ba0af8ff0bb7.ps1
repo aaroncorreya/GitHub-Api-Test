@@ -153,8 +153,7 @@ function PushCsvToRepo($getTreeResponse) {
 }
 
 function UpdatedPushCsvToRepo() {
-    # $content = ConvertTableToString
-    $content = "Hello World !"
+    $content = ConvertTableToString
     $relativeCsvPath = RelativePathWithBackslash $csvPath
 
     $resourceBranchExists = git ls-remote --heads "https://github.com/aaroncorreya/GitHub-Api-Test" $newResourceBranch | wc -l 
@@ -166,8 +165,8 @@ function UpdatedPushCsvToRepo() {
         git push -u origin $newResourceBranch
         New-Item -ItemType "directory" -Path ".sentinel"
     } else {
+        git fetch
         git checkout $newResourceBranch
-        #git pull
     }
     
     Write-Host "CSV: $relativeCsvPath"
@@ -176,13 +175,6 @@ function UpdatedPushCsvToRepo() {
     git commit -m "Updated tracking table"
     git push -u origin $newResourceBranch
     git checkout $branchName
-}
-
-function CreateBranch() {
-    git switch --orphan $newResourceBranch
-    git commit --allow-empty -m "Initial commit on orphan branch"
-    git push -u origin $newResourceBranch
-
 }
 
 function ReadCsvToTable {
@@ -543,7 +535,8 @@ function Deployment($fullDeploymentFlag, $remoteShaTable, $tree) {
                 }
             }
         }
-        PushCsvToRepo $tree
+        #PushCsvToRepo $tree
+        UpdatedPushCsvToRepo
         if ($totalFiles -gt 0 -and $totalFailed -gt 0) 
         {
             $err = "$totalFailed of $totalFiles deployments failed."
@@ -587,7 +580,10 @@ function SmartDeployment($fullDeploymentFlag, $remoteShaTable, $path, $parameter
 
 #Check if existing csv file exists in current and new branch
 function TryGetCsvFile {
-    if (Test-Path $csvPath) {$global:localCsvTablefinal = ReadCsvToTable}
+    if (Test-Path $csvPath) {
+        $global:localCsvTablefinal = ReadCsvToTable
+        Remove-Item -Path $csvPath
+    }
 
     $relativeCsvPath = RelativePathWithBackslash $csvPath
     "CSV PATH: $csvPath, relative path: $relativeCsvPath"
@@ -603,7 +599,6 @@ function TryGetCsvFile {
         }
         git checkout $branchName
     }
-    Write-Output $global:localCsvTablefinal
 }
 
 function main() {
@@ -634,9 +629,10 @@ function main() {
         ConnectAzCloud
     }
 
-    if (Test-Path $csvPath) {
-        $global:localCsvTablefinal = ReadCsvToTable
-    }
+    # if (Test-Path $csvPath) {
+    #     $global:localCsvTablefinal = ReadCsvToTable
+    # }
+    TryGetCsvFile
 
     LoadDeploymentConfig
 
