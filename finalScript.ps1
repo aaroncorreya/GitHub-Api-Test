@@ -114,13 +114,6 @@ function GetGithubTree {
     return $getTreeResponse
 }
 
-#Gets blob commit sha of the csv file, used when updating csv file to repo 
-function GetCsvCommitSha($getTreeResponse) {
-    $relativeCsvPath = RelativePathWithBackslash $csvPath
-    $shaObject = $getTreeResponse.tree | Where-Object { $_.path -eq $relativeCsvPath }
-    return $shaObject.sha
-}
-
 #Creates a table using the reponse from the tree api, creates a table 
 function GetCommitShaTable($getTreeResponse) {
     $shaTable = @{}
@@ -134,30 +127,10 @@ function GetCommitShaTable($getTreeResponse) {
     return $shaTable
 }
 
-#Pushes new/updated csv file to the user's repository. If updating file, will need csv commit sha. 
-function PushCsvToRepo($getTreeResponse) {
-    $relativeCsvPath = RelativePathWithBackslash $csvPath
-    $sha = GetCsvCommitSha $getTreeResponse
-    $createFileUrl = "https://api.github.com/repos/$githubRepository/contents/$relativeCsvPath"
-    $content = ConvertTableToString
-    $encodedContent = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($content))
-    
-    $body = @{
-        message = "trackingTable.csv created."
-        content = $encodedContent
-        branch = $branchName
-        sha = $sha
-    } | ConvertTo-Json
-
-    AttemptInvokeRestMethod "Put" $createFileUrl $body $null 3
-}
-
-function UpdatedPushCsvToRepo() {
+function PushCsvToRepo() {
     $content = ConvertTableToString
     $relativeCsvPath = RelativePathWithBackslash $csvPath
-
-    $resourceBranchExists = git ls-remote --heads "https://github.com/aaroncorreya/GitHub-Api-Test" $newResourceBranch | wc -l 
-    Write-Host "EXISTS: $resourceBranchExists"
+    $resourceBranchExists = git ls-remote --heads "https://github.com/$githubRepository" $newResourceBranch | wc -l 
 
     if ($resourceBranchExists -eq 0) {
         git switch --orphan $newResourceBranch
@@ -165,14 +138,13 @@ function UpdatedPushCsvToRepo() {
         git push -u origin $newResourceBranch
         New-Item -ItemType "directory" -Path ".sentinel"
     } else {
-        git fetch
+        git fetch > $null
         git checkout $newResourceBranch
     }
     
-    Write-Host "CSV: $relativeCsvPath"
     Write-Output $content > $relativeCsvPath
     git add $relativeCsvPath
-    git commit -m "Updated tracking table"
+    git commit -m "Modified tracking table"
     git push -u origin $newResourceBranch
     git checkout $branchName
 }
@@ -535,8 +507,7 @@ function Deployment($fullDeploymentFlag, $remoteShaTable, $tree) {
                 }
             }
         }
-        #PushCsvToRepo $tree
-        UpdatedPushCsvToRepo
+        PushCsvToRepo
         if ($totalFiles -gt 0 -and $totalFailed -gt 0) 
         {
             $err = "$totalFailed of $totalFiles deployments failed."
@@ -555,7 +526,6 @@ function SmartDeployment($fullDeploymentFlag, $remoteShaTable, $path, $parameter
         $isSuccess = $null
         if (!$fullDeploymentFlag) {
             $existingSha = $global:localCsvTablefinal[$path]
-            "SHA SHA SHA"
             $remoteSha = $remoteShaTable[$path]
             $skip = (($existingSha) -and ($existingSha -eq $remoteSha))
             if ($skip -and $parameterFile) {
@@ -579,29 +549,24 @@ function SmartDeployment($fullDeploymentFlag, $remoteShaTable, $path, $parameter
     }
 }
 
-#Check if existing csv file exists in current and new branch
 function TryGetCsvFile {
     if (Test-Path $csvPath) {
         $global:localCsvTablefinal = ReadCsvToTable
         Remove-Item -Path $csvPath
-
         git add $csvPath
-        git commit -m "Removed tracking file and moved to new unprotected branch"
+        git commit -m "Removed tracking file and moved to new sentinel created branch"
         git push origin $branchName
     }
 
     $relativeCsvPath = RelativePathWithBackslash $csvPath
-    "CSV PATH: $csvPath, relative path: $relativeCsvPath"
-    $resourceBranchExists = git ls-remote --heads "https://github.com/aaroncorreya/GitHub-Api-Test" $newResourceBranch | wc -l 
-    "Resource branch exists: $resourceBranchExists"
+    $resourceBranchExists = git ls-remote --heads "https://github.com/$githubRepository" $newResourceBranch | wc -l 
+    
     if ($resourceBranchExists -eq 1) {
-        git fetch
+        git fetch > $null
         git checkout $newResourceBranch
-        "New branch exists"
+        
         if (Test-Path $relativeCsvPath) {
-            "Found FILE in branch!!!"
             $global:localCsvTablefinal = ReadCsvToTable
-            Write-Host ($global:localCsvTablefinal | Format-Table | Out-String)
         }
         git checkout $branchName
     }
@@ -619,26 +584,20 @@ function main() {
         ConnectAzCloud
     }
 
-    # if (Test-Path $csvPath) {
-    #     $global:localCsvTablefinal = ReadCsvToTable
-    # }
     TryGetCsvFile
-
     LoadDeploymentConfig
-
     $tree = GetGithubTree
     $remoteShaTable = GetCommitShaTable $tree
 
     $existingConfigSha = $global:localCsvTablefinal[$configPath]
     $remoteConfigSha = $remoteShaTable[$configPath]
     $modifiedConfig = ($existingConfigSha -xor $remoteConfigSha) -or ($existingConfigSha -and $remoteConfigSha -and ($existingConfigSha -ne $remoteConfigSha))
+    
     if ($remoteConfigSha) {
         $global:updatedCsvTable[$configPath] = $remoteConfigSha
     }
 
-    # $fullDeploymentFlag = $modifiedConfig -or (-not (Test-Path $csvPath)) -or ($smartDeployment -eq "false")
     $fullDeploymentFlag = $modifiedConfig -or ($smartDeployment -eq "false")
-    "Full deployment flag: $fullDeploymentFlag"
     Deployment $fullDeploymentFlag $remoteShaTable $tree
 }
 
