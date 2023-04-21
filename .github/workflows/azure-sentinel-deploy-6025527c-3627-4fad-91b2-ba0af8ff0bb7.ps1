@@ -585,7 +585,7 @@ function TryGetCsvFile {
         Remove-Item -Path $csvPath
 
         git add $csvPath
-        git commit -m "Removed tracking file and moved to new branch"
+        git commit -m "Removed tracking file and moved to new unprotected branch"
         git push origin $branchName
     }
 
