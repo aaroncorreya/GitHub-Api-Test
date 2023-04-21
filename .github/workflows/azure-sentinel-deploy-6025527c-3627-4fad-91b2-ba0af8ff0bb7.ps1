@@ -555,6 +555,7 @@ function SmartDeployment($fullDeploymentFlag, $remoteShaTable, $path, $parameter
         $isSuccess = $null
         if (!$fullDeploymentFlag) {
             $existingSha = $global:localCsvTablefinal[$path]
+            Write-Host $existingSha
             $remoteSha = $remoteShaTable[$path]
             $skip = (($existingSha) -and ($existingSha -eq $remoteSha))
             if ($skip -and $parameterFile) {
