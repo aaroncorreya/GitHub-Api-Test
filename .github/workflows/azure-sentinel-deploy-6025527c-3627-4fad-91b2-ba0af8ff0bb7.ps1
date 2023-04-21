@@ -600,7 +600,7 @@ function TryGetCsvFile {
         if (Test-Path $relativeCsvPath) {
             "Found FILE in branch!!!"
             $global:localCsvTablefinal = ReadCsvToTable
-            Write-Output $global:localCsvTablefinal
+            Write-Host ($global:localCsvTablefinal | Format-Table | Out-String)
         }
         git checkout $branchName
     }
