@@ -138,7 +138,7 @@ function PushCsvToRepo() {
         git push -u origin $newResourceBranch
         New-Item -ItemType "directory" -Path ".sentinel"
     } else {
-        git fetch
+        git fetch > $null
         git checkout $newResourceBranch
     }
     
@@ -562,13 +562,11 @@ function TryGetCsvFile {
     $resourceBranchExists = git ls-remote --heads "https://github.com/aaroncorreya/GitHub-Api-Test" $newResourceBranch | wc -l 
     
     if ($resourceBranchExists -eq 1) {
-        git fetch
+        git fetch > $null
         git checkout $newResourceBranch
         
         if (Test-Path $relativeCsvPath) {
             $global:localCsvTablefinal = ReadCsvToTable
-            Write-Host ($global:localCsvTablefinal | Format-Table | Out-String)
-        
         }
         git checkout $branchName
     }
@@ -594,6 +592,7 @@ function main() {
     $existingConfigSha = $global:localCsvTablefinal[$configPath]
     $remoteConfigSha = $remoteShaTable[$configPath]
     $modifiedConfig = ($existingConfigSha -xor $remoteConfigSha) -or ($existingConfigSha -and $remoteConfigSha -and ($existingConfigSha -ne $remoteConfigSha))
+    
     if ($remoteConfigSha) {
         $global:updatedCsvTable[$configPath] = $remoteConfigSha
     }
