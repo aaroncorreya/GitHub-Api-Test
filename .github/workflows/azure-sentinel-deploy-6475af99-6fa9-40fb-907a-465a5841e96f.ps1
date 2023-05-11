@@ -130,7 +130,12 @@ function GetCommitShaTable($getTreeResponse) {
 function PushCsvToRepo() {
     $content = ConvertTableToString
     $relativeCsvPath = RelativePathWithBackslash $csvPath
+    
+    "https://github.com/$githubRepository"
+    
     $resourceBranchExists = git ls-remote --heads "https://github.com/$githubRepository" $newResourceBranch | wc -l 
+    
+    $resourceBranchExists
 
     if ($resourceBranchExists -eq 0) {
         git switch --orphan $newResourceBranch
@@ -560,7 +565,6 @@ function TryGetCsvFile {
 
     $relativeCsvPath = RelativePathWithBackslash $csvPath
     $resourceBranchExists = git ls-remote --heads "https://github.com/$githubRepository" $newResourceBranch | wc -l 
-    $resourceBranchExists
     
     if ($resourceBranchExists -eq 1) {
         git fetch > $null
