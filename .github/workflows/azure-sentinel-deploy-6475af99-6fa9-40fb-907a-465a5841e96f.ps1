@@ -560,6 +560,7 @@ function TryGetCsvFile {
 
     $relativeCsvPath = RelativePathWithBackslash $csvPath
     $resourceBranchExists = git ls-remote --heads "https://github.com/$githubRepository" $newResourceBranch | wc -l 
+    $resourceBranchExists
     
     if ($resourceBranchExists -eq 1) {
         git fetch > $null
