@@ -140,8 +140,8 @@ function PushCsvToRepo() {
     if ($resourceBranchExists -eq 0) {
         git switch --orphan $newResourceBranch
         git commit --allow-empty -m "Initial commit on orphan branch"
-        git push -u origin $newResourceBranch
-        # git push -u "https://$githubAuthToken@github.com/$githubRepository.git" $newResourceBranch 
+        # git push -u origin $newResourceBranch
+        git push -u "https://$githubAuthToken@github.com/$githubRepository.git" $newResourceBranch 
         New-Item -ItemType "directory" -Path ".sentinel"
     } else {
         git fetch > $null
@@ -151,8 +151,8 @@ function PushCsvToRepo() {
     Write-Output $content > $relativeCsvPath
     git add $relativeCsvPath
     git commit -m "Modified tracking table"
-    git push -u origin $newResourceBranch
-    # git push -u "https://$githubAuthToken@github.com/$githubRepository.git" $newResourceBranch 
+    # git push -u origin $newResourceBranch
+    git push -u "https://$githubAuthToken@github.com/$githubRepository.git" $newResourceBranch 
     git checkout $branchName
 }
 
@@ -562,8 +562,8 @@ function TryGetCsvFile {
         Remove-Item -Path $csvPath
         git add $csvPath
         git commit -m "Removed tracking file and moved to new sentinel created branch"
-        git push origin $branchName
-        # git push "https://$githubAuthToken@github.com/$githubRepository.git" $branchName 
+        # git push origin $branchName
+        git push "https://$githubAuthToken@github.com/$githubRepository.git" $branchName 
     }
 
     $relativeCsvPath = RelativePathWithBackslash $csvPath
