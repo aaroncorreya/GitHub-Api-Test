@@ -586,6 +586,9 @@ function main() {
     git config --global user.email "donotreply@microsoft.com"
     git config --global user.name "Sentinel"
 
+    git remote rm origin
+    git remote add origin "git@github.com:$githubRepository.git"
+
     if ($CloudEnv -ne 'AzureCloud') 
     {
         Write-Output "Attempting Sign In to Azure Cloud"
