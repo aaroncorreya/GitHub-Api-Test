@@ -590,7 +590,9 @@ function main() {
     # git remote rm origin
     # git remote add origin "git@github.com:$githubRepository.git"
 
-    git remote add origin "https://test:$githubAuthToken@github.com/aaroncorreya/GitHub-Api-Test.git"
+    git remote set-url origin "https://test:$githubAuthToken@github.com/aaroncorreya/GitHub-Api-Test.git"
+
+    # git remote add origin "https://test:$githubAuthToken@github.com/aaroncorreya/GitHub-Api-Test.git"
 
 
     if ($CloudEnv -ne 'AzureCloud') 
