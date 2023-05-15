@@ -585,7 +585,7 @@ function main() {
     git status
 
     # git config --global user.email "donotreply@microsoft.com"
-    git config --global user.name "aaroncorreya"
+    # git config --global user.name "aaroncorreya"
 
     git remote rm origin
     git remote add origin "git@github.com:$githubRepository.git"
