@@ -1,7 +1,7 @@
 {
   "value": [
     {
-      "id": "/subscriptions/d0cfe6b2-9ac0-4464-9919-dccaee2e48c0/resourceGroups/myRg/providers/Microsoft.OperationalInsights/workspaces/myWorkspace/providers/Microsoft.SecurityInsights/Watchlists/highValueAsset/WatchlistItems/fd37d325-7090-47fe-851a-5b5a00c3f576",
+      "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/Watchlists/highValueAsset/WatchlistItems/fd37d325-7090-47fe-851a-5b5a00c3f576')]",
       "name": "fd37d325-7090-47fe-851a-5b5a00c3f576",
       "etag": "\"f2089bfa-0000-0d00-0000-601c58b42021\"",
       "type": "Microsoft.SecurityInsights/Watchlists/WatchlistItems",
