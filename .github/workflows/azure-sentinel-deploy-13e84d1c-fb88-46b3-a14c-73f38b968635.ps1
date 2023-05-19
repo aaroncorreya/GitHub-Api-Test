@@ -321,8 +321,8 @@ function IsValidResourceType($template) {
     try {
         $isAllowedResources = $true
         $template.resources | ForEach-Object { 
-            $isAllowedResources = $resourceTypes.contains($_.type.ToLower()) -and $isAllowedResources
             $_.type.ToLower()
+            $isAllowedResources = $resourceTypes.contains($_.type.ToLower()) -and $isAllowedResources
         }
     }
     catch {
