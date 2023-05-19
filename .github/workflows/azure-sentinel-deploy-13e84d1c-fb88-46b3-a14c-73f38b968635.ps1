@@ -320,8 +320,8 @@ function IsRetryable($deploymentName) {
 function IsValidResourceType($template) {
     try {
         $isAllowedResources = $true
+        $template.resources
         $template.resources | ForEach-Object { 
-            $_.type.ToLower()
             $isAllowedResources = $resourceTypes.contains($_.type.ToLower()) -and $isAllowedResources
         }
     }
