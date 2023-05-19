@@ -29,7 +29,7 @@
       "email": "aaroncorreya@microsoft.com",
       "name": "a0965655-eecb-4c9f-8e21-2488aadf59fe"
     },
-    "description": "Configure the Network Session  Essentials solution monitoring  conditions her e. \n\nChoose between Detection or Hunting for Type and Anomaly or Static for Threshold type to tune monitoring according to environment.",
+    "description": "Configure the Network Session  Essentials solution monitoring   conditions her e. \n\nChoose between Detection or Hunting for Type and Anomaly or Static for Threshold type to tune monitoring according to environment.",
     "watchlistType": "watchlist",
     "watchlistAlias": "NetworkSession_Monitor_Configuration",
     "isDeleted": false,
