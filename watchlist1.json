@@ -1,36 +1,43 @@
 {
-  "value": [
-    {
-      "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/Watchlists/highValueAsset/WatchlistItems/fd37d325-7090-47fe-851a-5b5a00c3f576')]",
-      "name": "fd37d325-7090-47fe-851a-5b5a00c3f576",
-      "etag": "\"f2089bfa-0000-0d00-0000-601c58b42021\"",
-      "type": "Microsoft.SecurityInsights/Watchlists/WatchlistItems",
-      "properties": {
-        "watchlistItemType": "watchlist-item",
-        "watchlistItemId": "fd37d325-7090-47fe-851a-5b5a00c3f576",
-        "tenantId": "3f8901fe-63d9-4875-9ad5-9fb3b8105797",
-        "isDeleted": false,
-        "created": "2021-02-04T12:27:32.3783333-08:00",
-        "updated": "2021-02-04T12:27:32.3783333-08:00",
-        "createdBy": {
-          "objectId": "2046feea-040d-4a46-9e2b-91c2941bfa70",
-          "email": "john@contoso.com",
-          "name": "john doe"
-        },
-        "updatedBy": {
-          "objectId": "2046feea-040d-4a46-9e2b-91c2941bfa70",
-          "email": "john@contoso.com",
-          "name": "john doe"
-        },
-        "itemsKeyValue": {
-          "Header-1": "v1_1",
-          "Header-2": "v1_2",
-          "Header-3": "v1_3",
-          "Header-4": "v1_4",
-          "Header-5": "v1_5"
-        },
-        "entityMapping": {}
-      }
-    }
-  ]
+  "id": "/subscriptions/419581d6-4853-49bd-83b6-d94bb8a77887/resourceGroups/cac-test-rg/providers/Microsoft.OperationalInsights/workspaces/acorreya-prod-test/providers/Microsoft.SecurityInsights/Watchlists/NetworkSession_Monitor_Configuration",
+  "name": "NetworkSession_Monitor_Configuration",
+  "etag": "\"2b00058e-0000-0100-0000-645d6bb20000\"",
+  "type": "Microsoft.SecurityInsights/Watchlists",
+  "systemData": {
+    "createdAt": "2023-05-11T22:26:56.411578Z",
+    "createdBy": "aaroncorreya@microsoft.com",
+    "createdByType": "User",
+    "lastModifiedAt": "2023-05-11T22:26:56.411578Z",
+    "lastModifiedBy": "aaroncorreya@microsoft.com",
+    "lastModifiedByType": "User"
+  },
+  "properties": {
+    "watchlistId": "be55461c-ff6c-46bb-8a78-88ffe6b5e9ac",
+    "displayName": "Test Watchlist ",
+    "provider": "Microsoft",
+    "source": "NetworkSession_Monitor_Configuration.csv",
+    "itemsSearchKey": "Ports",
+    "created": "2023-05-11T22:26:56.411578+00:00",
+    "updated": "2023-05-11T22:26:56.411578+00:00",
+    "createdBy": {
+      "objectId": "87801462-6451-4dae-a2c9-be85b92bd0dc",
+      "email": "aaroncorreya@microsoft.com",
+      "name": "a0965655-eecb-4c9f-8e21-2488aadf59fe"
+    },
+    "updatedBy": {
+      "objectId": "87801462-6451-4dae-a2c9-be85b92bd0dc",
+      "email": "aaroncorreya@microsoft.com",
+      "name": "a0965655-eecb-4c9f-8e21-2488aadf59fe"
+    },
+    "description": "Configure the Network Session Essentials solution monitoring conditions here. \n\nChoose between Detection or Hunting for Type and Anomaly or Static for Threshold type to tune monitoring according to environment.",
+    "watchlistType": "watchlist",
+    "watchlistAlias": "NetworkSession_Monitor_Configuration",
+    "isDeleted": false,
+    "labels": [],
+    "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+    "numberOfLinesToSkip": 0,
+    "provisioningState": "Succeeded",
+    "sasUri": "",
+    "watchlistCategory": "General"
+  }
 }

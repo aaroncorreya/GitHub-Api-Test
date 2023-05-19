@@ -13,7 +13,7 @@ $contentTypeMapping = @{
     "Parser"=@("Microsoft.OperationalInsights/workspaces/savedSearches");
     "Playbook"=@("Microsoft.Web/connections", "Microsoft.Logic/workflows", "Microsoft.Web/customApis");
     "Workbook"=@("Microsoft.Insights/workbooks");
-    "Watchlist"=@("Microsoft.OperationalInsights/workspaces/providers/Watchlists");
+    "Watchlist"=@("Microsoft.SecurityInsights/Watchlists");
 }
 $sourceControlId = $Env:sourceControlId 
 $rootDirectory = $Env:rootDirectory
