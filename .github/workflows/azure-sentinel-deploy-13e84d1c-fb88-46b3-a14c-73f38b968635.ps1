@@ -13,7 +13,6 @@ $contentTypeMapping = @{
     "Parser"=@("Microsoft.OperationalInsights/workspaces/savedSearches");
     "Playbook"=@("Microsoft.Web/connections", "Microsoft.Logic/workflows", "Microsoft.Web/customApis");
     "Workbook"=@("Microsoft.Insights/workbooks");
-    "Watchlist"=@("Microsoft.SecurityInsights/Watchlists");
 }
 $sourceControlId = $Env:sourceControlId 
 $rootDirectory = $Env:rootDirectory
@@ -38,7 +37,6 @@ $sentinelResourcePatterns = @{
     "Parser" = "/subscriptions/$guidPattern/resourceGroups/$namePattern/providers/Microsoft.OperationalInsights/workspaces/$namePattern/savedSearches/$namePattern"
     "Playbook" = "/subscriptions/$guidPattern/resourceGroups/$namePattern/providers/Microsoft.Logic/workflows/$namePattern"
     "Workbook" = "/subscriptions/$guidPattern/resourceGroups/$namePattern/providers/Microsoft.Insights/workbooks/$namePattern"
-    "Watchlist" = "/subscriptions/$guidPattern/resourceGroups/$namePattern/providers/Microsoft.OperationalInsights/workspaces/$namePattern/providers/Microsoft.SecurityInsights/Watchlists/$namePattern"
 }
 
 if ([string]::IsNullOrEmpty($contentTypes)) {
@@ -321,7 +319,6 @@ function IsValidResourceType($template) {
     try {
         $isAllowedResources = $true
         $template.resources | ForEach-Object { 
-            Write-Host $_.type
             $isAllowedResources = $resourceTypes.contains($_.type.ToLower()) -and $isAllowedResources
         }
     }
